@@ -12,7 +12,7 @@ const parameterChanger = (program, addressOneValue, addressTwoValue) => {
   programToChange[2] = addressTwoValue;
 
   return programToChange;
-}
+};
 
 const predicatesForProgram = {
   1: add,
@@ -30,16 +30,20 @@ const operator = (program, programInstructions, instruction) => {
 };
 
 const instructionPointer = (program, addressOneValue, addressTwoValue) => {
-  const programInstructions = parameterChanger(program.split(",").map((x) => parseInt(x)), addressOneValue, addressTwoValue);
+  const programInstructions = parameterChanger(
+    program.split(",").map((x) => parseInt(x)),
+    addressOneValue,
+    addressTwoValue,
+  );
 
-  let i = 0;
-  while (i < programInstructions.length) {
-    const j = i + 4;
+  let currentInstructionAddress = 0;
+  while (currentInstructionAddress < programInstructions.length) {
+    const nextInstructionAddress = currentInstructionAddress + 4;
 
-    const parsedProgram = programInstructions.slice(i, j);
+    const parsedProgram = programInstructions.slice(currentInstructionAddress, nextInstructionAddress);
     if (parsedProgram[0] === 99) return programInstructions;
     operator(parsedProgram, programInstructions, parsedProgram[0]);
-    i = j;
+    currentInstructionAddress = nextInstructionAddress;
   }
 
   return programInstructions;
@@ -47,18 +51,18 @@ const instructionPointer = (program, addressOneValue, addressTwoValue) => {
 
 const part1 = (program) => {
   return instructionPointer(program, 12, 2);
-}
+};
 
 const part2 = (program) => {
-  for(let noun = 0; noun <= 99; noun++) {
-    for(let verb = 0; verb <= 99; verb++) {
+  for (let noun = 0; noun <= 99; noun++) {
+    for (let verb = 0; verb <= 99; verb++) {
       const executedMemory = instructionPointer(program, noun, verb);
       const addressZeroValue = parseInt(executedMemory[0]);
-      if(addressZeroValue === 19690720) {
-        return (100 * noun) + verb;      
-      }      
+      if (addressZeroValue === 19690720) {
+        return (100 * noun) + verb;
+      }
     }
   }
-}
+};
 
 console.log(part2(program));
