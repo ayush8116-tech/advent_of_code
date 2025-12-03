@@ -1,11 +1,21 @@
 const divide = (mass) =>  mass / 3;  
 const roundOff = (mass) =>  Math.floor(divide(mass));  
-const subtract = (mass) =>  roundOff(mass) - 2; 
+const fuelRequired = (mass) =>  {
+  const fuel = roundOff(mass) - 2;
+  
+  if(fuel <= 0) {
+    return 0;
+  }
+
+  return fuel + fuelRequired(fuel);
+}
+
 const sum = (masses) => {
   return masses.reduce((sum, mass) => {
-   return sum + subtract(mass);
+   return sum + fuelRequired(mass);
   },0)
 } 
+
 const main = (masses) =>  {
   return sum(masses);
 }
