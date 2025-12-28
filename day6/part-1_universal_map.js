@@ -1,54 +1,39 @@
-import { input } from "./part-1.js";
-const dbg = (x) => console.log(x) && x;
+const childParent = {}
+//{"B" : "COM", "C" : "B"}
+const count = (child, relations) => {
+  if(relations[child] === undefined) {
+    return 0;
+  }
+  return (1 + count(relations[child], relations))
+}
 
-const orbitMap = {};
-const navigation = { direct: [], indirect: [] };
+export const relationSum = (counts) => {
+  return counts.reduce((sum, count) => (sum += count) && sum,0)
+}
 
-export const generateOrbitMap = (planets) => {
-  if(!(planets[0] in orbitMap)) {
-    orbitMap[planets[0]] = navigation
+export const countRelations = (relations) => {
+  const parentCounts = [];
+  for(const child in relations) {
+    parentCounts.push(count(child, relations))
   }
 
-  let i = 1;
-  while (i < planets.length) {
-    const navigationMap = {
-      direct: [...navigation.direct],
-      indirect: [...navigation.indirect],
-    };
+  return relationSum(parentCounts)
+}
 
-    navigationMap.direct.push(planets[i - 1]);
-    const indirectlyConnected = orbitMap[navigationMap.direct].direct.concat(
-      orbitMap[navigationMap.direct].indirect,
-    );
+export const generateRelations = (map) => {
+  const spaceMap = [...map]
+  spaceMap.forEach(([parent, child]) => {
+    childParent[child] = parent
+  })
 
-    navigationMap.indirect.push(...indirectlyConnected);
-    orbitMap[planets[i]] = navigationMap;
+  return childParent;
+}
 
-    i++;
-  }
 
-  return orbitMap;
-};
+// export const parseMap = (map) => {
+//   return 0;
+// }
 
-export const calculateOrbits = (map) => {
-  const planetsNavigation = Object.values(map);
-  const orbitCount = planetsNavigation.reduce((sum, planet) => {
-    sum += planet.direct.length + planet.indirect.length;
-    return sum;
-  }, 0);
-
-  return orbitCount;
-};
-
-export const main = (map) => {
-  const mapTokens = map.split("  ");
-  const splittedMapTokens = mapTokens.map((planetPosition) =>
-    planetPosition.split(")")
-  );
-
-  splittedMapTokens.map((map) => generateOrbitMap(map));
-  const orbitCount = calculateOrbits(orbitMap);
-  return orbitCount;
-};
-
-console.log(main(input))
+// export const main = (map) => {
+//   const parsedMap = parseMap(map)
+// }
