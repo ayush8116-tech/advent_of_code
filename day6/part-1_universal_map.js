@@ -1,5 +1,5 @@
 const childParent = {}
-//{"B" : "COM", "C" : "B"}
+
 const count = (child, relations) => {
   if(relations[child] === undefined) {
     return 0;
@@ -26,14 +26,22 @@ export const generateRelations = (map) => {
     childParent[child] = parent
   })
 
-  return childParent;
+  return childParent
 }
 
+export const parseMap = (mapString) => {
+  const orbits = mapString.split("  ")
+  const planets = orbits.map(system => system.split(")"))
 
-// export const parseMap = (map) => {
-//   return 0;
-// }
+  return planets;
+}
 
-// export const main = (map) => {
-//   const parsedMap = parseMap(map)
-// }
+export const main = (map) => {
+  const parsedMap = parseMap(map)
+  generateRelations(parsedMap)
+
+  return countRelations(childParent)
+}
+
+const input = Deno.readTextFileSync("./input.md")
+console.log(main(input))
